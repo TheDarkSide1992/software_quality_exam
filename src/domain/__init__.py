@@ -1,3 +1,5 @@
-import entities as entities
+from .entities import Booking
+from .entities import Customer
+from .entities import Room
 
-__all__ = [entities]
+__all__ = ["Customer", "Room", "Booking"]

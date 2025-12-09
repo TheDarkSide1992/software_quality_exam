@@ -10,6 +10,8 @@ THis Project Was Written as n exam project at EASV(Buisnes Academy South West
 * Emil
 * Andreas
 
-
-
+> to run test use the folowing command
+>```bash
+>pytest src/test/unit/booking_manager_tests.py
+>``` 
 
