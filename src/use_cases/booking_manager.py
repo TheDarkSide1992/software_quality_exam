@@ -7,7 +7,7 @@ from src.ports.repositories.repository import Repository
 from src.domain import entities
 
 
-class SubmitBidUseCase:
+class BookingManager:
     def __init__(self, booking_repository: Repository[entities.Booking], room_repository: Repository[entities.Room]):
         self.booking_repository = booking_repository
         self.room_repository = room_repository
