@@ -1,7 +1,5 @@
-from asyncio import Task
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
-from xmlrpc.client import DateTime
 
 from src.ports.repositories.repository import Repository
 from src.domain import entities
@@ -13,11 +11,9 @@ class BookingManager:
         self.room_repository = room_repository
 
     async def create_booking(self, booking: entities.Booking) -> bool:
-        print("DOO SOMETHING")
+        room_id: int = await self.find_available_room(start_date=booking.start_date, end_date=booking.end_date)
 
-        room_id: int = await self.find_available_room(start_date=booking.StartDate, end_date=booking.EndDate)
-
-        if room_id is None or  room_id < 0: return False
+        if room_id is None or  room_id <= 0: return False
 
         booking.RoomId = room_id
         booking.is_active = True
@@ -26,79 +22,39 @@ class BookingManager:
         return True
 
     async def find_available_room(self, start_date: datetime, end_date: datetime) -> int:
-        print("DOO SOMETHING")
-        # TODO implement this.
+        if start_date <= datetime.today() or start_date > end_date:
+            raise ValueError("The start date cannot be in the past or later than the end date.")
 
-        return 0
+        bookings: List[entities.Booking] = await self.booking_repository.get_all_async()
+        active_bookings = [b for b in bookings if b.is_active]
+        rooms: List[entities.Room] = await self.room_repository.get_all_async()
 
-    async def get_fully_ocupied_dates(self, start_date: datetime, end_date: datetime) -> List[DateTime]:
-        print("DOO SOMETHING")
+        for room in rooms:
+            active_bookings_for_current_room = [b for b in active_bookings if b.room_id == room.id]
 
-        return []
-        # TODO implement this
+            if all(start_date < b.start_date and end_date < b.start_date or start_date > b.end_date and end_date > b.end_date for b in active_bookings_for_current_room):
+                return room.id
+
+        return -1
+
+    async def get_fully_ocupied_dates(self, start_date: datetime, end_date: datetime) -> List[datetime]:
+        if start_date > end_date:
+            raise ValueError("The start date cannot be later than the end date.")
+
+        fully_occupied_dates: List[datetime] = []
+        rooms: List[entities.Room] = await self.room_repository.get_all_async()
+        no_of_rooms = len(rooms)
+        bookings: List[entities.Booking] = await self.booking_repository.get_all_async()
 
 
-"""
-public async Task<bool> CreateBooking(Booking booking)
-        {
-            int roomId = await FindAvailableRoom(booking.StartDate, booking.EndDate);
+        if bookings:
+            current = start_date
+            while current <= end_date:
+                no_of_bookings = [
+                    b for b in bookings if b.is_active and b.start_date <= current <= b.end_date
+                ]
+                if len(no_of_bookings) >= no_of_rooms:
+                    fully_occupied_dates.append(current)
+                current += timedelta(days=1)
 
-            if (roomId >= 0)
-            {
-                booking.RoomId = roomId;
-                booking.IsActive = true;
-                await bookingRepository.AddAsync(booking);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public async Task<int> FindAvailableRoom(DateTime startDate, DateTime endDate)
-        {
-            if (startDate <= DateTime.Today || startDate > endDate)
-                throw new ArgumentException("The start date cannot be in the past or later than the end date.");
-
-            var bookings = await bookingRepository.GetAllAsync();
-            var activeBookings = bookings.Where(b => b.IsActive);
-            var rooms = await roomRepository.GetAllAsync();
-            foreach (var room in rooms)
-            {
-                var activeBookingsForCurrentRoom = activeBookings.Where(b => b.RoomId == room.Id);
-                if (activeBookingsForCurrentRoom.All(b => startDate < b.StartDate &&
-                    endDate < b.StartDate || startDate > b.EndDate && endDate > b.EndDate))
-                {
-                    return room.Id;
-                }
-            }
-            return -1;
-        }
-
-        public async Task<List<DateTime>> GetFullyOccupiedDates(DateTime startDate, DateTime endDate)
-        {
-            if (startDate > endDate)
-                throw new ArgumentException("The start date cannot be later than the end date.");
-
-            List<DateTime> fullyOccupiedDates = new List<DateTime>();
-            var rooms = await roomRepository.GetAllAsync();
-            int noOfRooms = rooms.Count();
-            var bookings = await bookingRepository.GetAllAsync();
-
-            if (bookings.Any())
-            {
-                for (DateTime d = startDate; d <= endDate; d = d.AddDays(1))
-                {
-                    var noOfBookings = from b in bookings
-                                       where b.IsActive && d >= b.StartDate && d <= b.EndDate
-                                       select b;
-                    if (noOfBookings.Count() >= noOfRooms)
-                        fullyOccupiedDates.Add(d);
-                }
-            }
-            return fullyOccupiedDates;
-        }
-
-    }
-"""
+        return fully_occupied_dates
