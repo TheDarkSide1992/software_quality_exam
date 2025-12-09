@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from uuid import UUID
-
 
 @dataclass
 class Customer:
-    id: UUID
+    id: int
     name: str
     email: str
 

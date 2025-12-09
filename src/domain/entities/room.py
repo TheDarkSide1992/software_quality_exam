@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from uuid import UUID
-from xml.dom.minidom import Entity
 
 @dataclass()
 class Room:
-    id: UUID
+    id: int
     name: str
 
 """
