@@ -27,12 +27,3 @@ class Repository(Generic[T]):
     @abstractmethod
     async def remove_async(self, bid: T) -> None:
         pass
-
-
-"""
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<T> GetAsync(int id);
-    Task AddAsync(T entity);
-    Task EditAsync(T entity);
-    Task RemoveAsync(int id);
-"""
