@@ -1,28 +1,23 @@
 
+from datetime import datetime, timedelta
 import pytest
 
-from src.ports.repositories import Repository
 from src.domain import entities
 from src.adapters.repositories import FakeBookingRepository, FakeRoomRepository
+from src.use_cases import BookingManager
 
 
 @pytest.fixture
-def room_repository() -> Repository[entities.Room]:
-    return FakeRoomRepository()
-
-def booking_repository() -> Repository[entities.Room]:
-    return FakeBookingRepository()
+def booking_manager() -> BookingManager:
+    return  BookingManager(room_repository=FakeBookingRepository(), booking_repository=FakeRoomRepository())
 
 
-"""
-mock test is written for testing mock library and should not be used in actuality
-"""
-def mock_Test(): #TODO remove this
-    return 4
-def test_mock(): #TODO remove this
-    assert mock_Test() == 4
-def test_mock2(): #TODO remove this
-    _booking_repository = booking_repository()
 
-    _booking_repository.get_async(id=2)
-    assert mock_Test() != 5
+
+def test__fina_available_rooms__not_none(booking_manager):
+    _start_date = datetime.now()
+    _end_date = datetime.now() + timedelta(days=3)
+
+    result = booking_manager.find_available_room(start_date=_start_date, end_date=_end_date)
+
+    assert result is not None
