@@ -1,29 +1,28 @@
-from abc import abstractmethod
-from asyncio import Task
+from abc import abstractmethod, ABC
 from typing import Any, Generic, TypeVar
 
 T = TypeVar('T')
 
-class Repository(Generic[T]):
-    def __init__(self, data_type: T):
+class Repository(ABC, Generic[T]):
+    def __init__(self, data_type: T) -> None:
         self.type = data_type
 
     @abstractmethod
-    async def get_all_async(self, **filters: Any) -> list[T] | None:
+    async def get_all_async(self) -> list[T] | None:
         pass
 
     @abstractmethod
-    async def get_async(self, bid: T) -> T | None:
+    async def get_async(self, id: int) -> T | None:
         pass
 
     @abstractmethod
-    async def add_async(self, bid: T) -> None:
+    async def add_async(self, entity: T) -> None:
         pass
 
     @abstractmethod
-    async def edit_async(self, bid: T) ->  None:
+    async def edit_async(self, entity: T) ->  None:
         pass
 
     @abstractmethod
-    async def remove_async(self, bid: T) -> None:
+    async def remove_async(self, entity: T) -> None:
         pass
