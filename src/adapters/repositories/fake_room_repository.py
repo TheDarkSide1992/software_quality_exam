@@ -15,16 +15,10 @@ class FakeRoomRepository(Repository):
             entities.Room(id=12,description="Best room")
         ]
     async def get_async(self, id: int) -> entities.Room | None:
-        print("TODO")
-
         if id == 117: return entities.Room(id=19, description="Less popular room")
     async def add_async(self, entity: entities.Room) -> None:
-        print("Booking added")
-
         if entity is None or entity.id is None or entity.customer_id is None: raise ValueError("Invalid entity")
     async def edit_async(self, entity: entities.Room) ->  None:
-        print("booking edited")
         if entity is None or entity.id is None or entity.customer_id is None: raise ValueError("Invalid entity")
     async def remove_async(self, entity: entities.Room) -> None:
-        print("Booking removed")
         if entity is None or entity.id is None or entity.customer_id is None: raise ValueError("Invalid entity")
