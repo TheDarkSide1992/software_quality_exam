@@ -22,7 +22,7 @@ class BookingManager:
         return True
 
     async def find_available_room(self, start_date: datetime, end_date: datetime) -> int:
-        if start_date <= datetime.today() or start_date > end_date:
+        if start_date.date() <= datetime.today().date() or start_date.date() > end_date.date():
             raise ValueError("The start date cannot be in the past or later than the end date.")
 
         bookings: List[entities.Booking] = await self.booking_repository.get_all_async()
