@@ -32,7 +32,7 @@ class BookingManager:
         for room in rooms:
             active_bookings_for_current_room = [b for b in active_bookings if b.room_id == room.id]
 
-            if all(start_date < b.start_date and end_date < b.start_date or start_date > b.end_date and end_date > b.end_date for b in active_bookings_for_current_room):
+            if all(start_date.date() < b.start_date.date() and end_date.date() < b.start_date.date() or start_date.date() > b.end_date.date() and end_date.date() > b.end_date.date() for b in active_bookings_for_current_room):
                 return room.id
 
         return -1
@@ -48,10 +48,10 @@ class BookingManager:
 
 
         if bookings:
-            current = start_date
-            while current <= end_date:
+            current = start_date.date()
+            while current <= end_date.date():
                 no_of_bookings = [
-                    b for b in bookings if b.is_active and b.start_date <= current <= b.end_date
+                    b for b in bookings if b.is_active and b.start_date.date() <= current <= b.end_date.date()
                 ]
                 if len(no_of_bookings) >= no_of_rooms:
                     fully_occupied_dates.append(current)

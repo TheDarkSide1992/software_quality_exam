@@ -39,7 +39,7 @@ def booking_manager(room_repository, booking_repository) -> BookingManager:
 
 
 @pytest.mark.asyncio
-async def test__fina_available_rooms__not_none(booking_manager, room_repository, booking_repository):
+async def test__find_available_rooms__not_none(booking_manager, room_repository, booking_repository):
     _start_date = datetime.now() + timedelta(days=1)
     _end_date = datetime.now() + timedelta(days=10)
 
