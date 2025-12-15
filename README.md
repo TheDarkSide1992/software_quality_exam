@@ -27,6 +27,6 @@ pip install -r requirements.txt
 ## run
 > to run test use the folowing command
 >```bash
->pytest src/test/unit/booking_manager_tests.py
+>pytest src/test/unit/
 >``` 
 
