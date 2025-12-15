@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from typing import List
 from unittest.mock import AsyncMock, Mock
 import pytest
 from src.domain import entities
@@ -52,7 +51,8 @@ def booking_manager(room_repository, booking_repository) -> BookingManager:
 @pytest.mark.parametrize(
     "start_date, end_date", FUTURE_DATES_RESERVED
 )
-async def test__fully_occupied__dates_in_range__list_of_dates(start_date, end_date, booking_repository, room_repository, booking_manager):
+async def test__fully_occupied__dates_in_range__list_of_dates(start_date, end_date, booking_repository, room_repository,
+                                                              booking_manager):
     _result = await booking_manager.get_fully_ocupied_dates(start_date=start_date, end_date=end_date)
 
     assert len(_result) is not 0
@@ -60,8 +60,10 @@ async def test__fully_occupied__dates_in_range__list_of_dates(start_date, end_da
     assert room_repository.get_all_async.call_count == 1
     assert booking_repository.get_all_async.call_count == 1
 
+
 @pytest.mark.asyncio
-async def test__fully_occupied_dates__inside_outside_date_in_range__dates_in_range(booking_repository, room_repository, booking_manager):
+async def test__fully_occupied_dates__inside_outside_date_in_range__dates_in_range(booking_repository, room_repository,
+                                                                                   booking_manager):
     _expected = [
         (datetime.now() + timedelta(days=19)).date(),
         (datetime.now() + timedelta(days=20)).date(),
@@ -72,31 +74,32 @@ async def test__fully_occupied_dates__inside_outside_date_in_range__dates_in_ran
 
     _result = await booking_manager.get_fully_ocupied_dates(start_date=_start_date, end_date=_end_date)
 
-
     assert len(_result) is not 0
     assert _result == _expected
     assert _result.__contains__(_start_date.date())
     assert room_repository.get_all_async.call_count == 1
     assert booking_repository.get_all_async.call_count == 1
 
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "start_date, end_date", START_DATE_IN_FUTURE
 )
-async def test__fully_occupied_dates__outside_date_range__empty(start_date, end_date, booking_repository, room_repository, booking_manager):
-
+async def test__fully_occupied_dates__outside_date_range__empty(start_date, end_date, booking_repository,
+                                                                room_repository, booking_manager):
     _result = await booking_manager.get_fully_ocupied_dates(start_date=start_date, end_date=end_date)
 
     assert len(_result) is 0
     assert room_repository.get_all_async.call_count == 1
     assert booking_repository.get_all_async.call_count == 1
 
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "start_date, end_date", START_DATE_HIGHER_THAN_END_DATE
 )
-async def test_dully_occupied_dates__dates_in_past__exception(start_date, end_date, booking_repository, room_repository, booking_manager):
-
+async def test_dully_occupied_dates__dates_in_past__exception(start_date, end_date, booking_repository, room_repository,
+                                                              booking_manager):
     with pytest.raises(ValueError):
         await booking_manager.get_fully_ocupied_dates(start_date=start_date, end_date=end_date)
 

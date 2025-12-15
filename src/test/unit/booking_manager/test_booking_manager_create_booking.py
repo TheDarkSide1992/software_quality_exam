@@ -88,7 +88,7 @@ async def test__create_booking__start_date_higher_than_end_date__exception(start
 @pytest.mark.parametrize(
     "start_date, end_date", START_DATE_NOT_IN_FUTURE
 )
-async def test__create_booking__start_date_biger_than_end_Date__exception(start_date, end_date, booking_repository, room_repository, booking_manager):
+async def test__create_booking__start_date_biger_than_end_date__exception(start_date, end_date, booking_repository, room_repository, booking_manager):
     _booking = entities.Booking(start_date=start_date, end_date=end_date, is_active=False, customer_id=None,
                                 room_id=None, id=None)
     with pytest.raises(ValueError):

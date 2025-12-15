@@ -83,8 +83,8 @@ async def test__find_available_room__start_date_in_future__returns_room(start_da
 @pytest.mark.parametrize(
     "start_date, end_date", FUTURE_DATES_RESERVED
 )
-async def test__find_available_future_date_reserved__minus_one(start_date, end_date, booking_manager, room_repository,
-                                                               booking_repository):
+async def test__find_available_future_date_reserved__minus_one(start_date, end_date, booking_manager,
+                                                               room_repository, booking_repository):
     _start_date = start_date
     _end_date = end_date
 
@@ -101,10 +101,8 @@ async def test__find_available_future_date_reserved__minus_one(start_date, end_d
     "start_date, end_date",
     START_DATE_HIGHER_THAN_END_DATE
 )
-async def test__find_available_room__start_date_higher_than_end_date__throws_exception(start_date, end_date,
-                                                                                       booking_manager,
-                                                                                       room_repository,
-                                                                                       booking_repository):
+async def test__find_available_room__start_date_higher_than_end_date__throws_exception(
+        start_date, end_date, booking_manager, room_repository, booking_repository):
     _start_date = start_date
     _end_date = end_date
 
