@@ -67,7 +67,7 @@ async def test__create_booking__not_fully_occupied__true(start_date, end_date, b
     _booking = entities.Booking(start_date=start_date, end_date=end_date, is_active=False, customer_id=None,
                                 room_id=None, id=None)
 
-    result = await booking_manager.create_booking(_booking)
+    result = await booking_manager.create_booking(booking=_booking)
 
     assert result == True
     assert booking_repository.get_all_async.call_count == 1
@@ -80,7 +80,7 @@ async def test__create_booking__start_date_higher_than_end_date__exception(start
     _booking = entities.Booking(start_date=start_date, end_date=end_date, is_active=False, customer_id=None,
                                 room_id=None, id=None)
     with pytest.raises(ValueError):
-        await booking_manager.find_available_room(start_date=start_date, end_date=end_date)
+        await booking_manager.create_booking(booking=_booking)
     assert booking_repository.call_count == 0
 
 
@@ -92,4 +92,4 @@ async def test__create_booking__start_date_biger_than_end_date__exception(start_
     _booking = entities.Booking(start_date=start_date, end_date=end_date, is_active=False, customer_id=None,
                                 room_id=None, id=None)
     with pytest.raises(ValueError):
-        await booking_manager.find_available_room(start_date=start_date, end_date=end_date)
+        await booking_manager.create_booking(booking=_booking)
