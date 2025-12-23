@@ -26,8 +26,20 @@ pip install -r requirements.txt
 
 ## run
 >
-> to run test use the following command
+> to run test use the following command to run unit tests
 >
 >```bash
 >pytest src/test/unit/
+>```
+
+> to run test use the following command to run cucumber tests
+>
+>```bash
+>pytest src/test/features/
+>```
+
+> to run test use the following command to run all tests
+>
+>```bash
+>pytest
 >```
