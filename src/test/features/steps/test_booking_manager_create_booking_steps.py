@@ -1,4 +1,4 @@
-from pytest_bdd import given, when, then, parsers, scenario
+from pytest_bdd import given, when, then, parsers, scenarios
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, Mock
 import pytest
@@ -47,10 +47,7 @@ def context():
 
 #=====================================================================================================================
 
-@scenario("booking_manager_create_booking.feature", "Create a booking successfully")
-def test():
-    print("test")
-    pass
+scenarios("booking_manager_create_booking.feature")
 
 @given(parsers.parse("A booking starting on {start_date:d}"))
 def starting_on(context, start_date: int):
@@ -75,3 +72,32 @@ def booking_should_be_created_successfully(context, booking_repository, room_rep
     assert result is not None
     assert room_repository.get_all_async.call_count == 1
     assert booking_repository.get_all_async.call_count == 1
+
+@when("the booking fails to be created")
+def booking_creation_fails(context, booking_repository, room_repository, booking_manager):
+    try:
+        _booking = entities.Booking(start_date=context["start_date"], end_date=context["end_date"], is_active=False, customer_id=None,
+                                    room_id=None, id=None)
+        result = asyncio.run(booking_manager.create_booking(booking=_booking))
+        print(result)
+    except Exception as e:
+        context["exception"] = e
+        print(e)
+
+@then("there should be an error message indicating invalid dates")
+def booking_should_not_be_created(context, booking_repository, room_repository):
+    print(context)
+    exception = context["exception"]
+    assert exception is not None
+    assert room_repository.get_all_async.call_count == 0
+    assert booking_repository.get_all_async.call_count == 0
+    assert booking_repository.add_async.call_count == 0
+
+@then("The booking should not be be created due to full occupancy")
+def booking_should_not_be_created_due_to_full_occupancy(context, booking_repository, room_repository, booking_manager):
+    result = asyncio.run(booking_manager.create_booking(booking=context["booking"]))
+    assert result is not None
+    assert result is False
+    assert room_repository.get_all_async.call_count == 1
+    assert booking_repository.get_all_async.call_count == 1
+    assert booking_repository.add_async.call_count == 0
