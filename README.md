@@ -41,5 +41,5 @@ pip install -r requirements.txt
 > to run test use the following command to run all tests
 >
 >```bash
->pytest
+> pytest src/test/
 >```

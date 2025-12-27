@@ -93,7 +93,7 @@ def booking_should_not_be_created(context, booking_repository, room_repository):
     assert booking_repository.get_all_async.call_count == 0
     assert booking_repository.add_async.call_count == 0
 
-@then("The booking should be not be created due to full occupancy")
+@then("The booking should not be be created due to full occupancy")
 def booking_should_not_be_created_due_to_full_occupancy(context, booking_repository, room_repository, booking_manager):
     result = asyncio.run(booking_manager.create_booking(booking=context["booking"]))
     assert result is not None
